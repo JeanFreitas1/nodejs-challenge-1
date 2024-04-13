@@ -4,35 +4,29 @@ import { json } from "./middlewares/json.js";
 import { routes } from "./routes.js";
 import { extractQueryParams } from "./utils/extract-query-params.js";
 
-
 const server = http.createServer(async (req, res) => {
-  const { method, url } = req;
+    const { method, url } = req;
 
-  await json(req, res)
+    await json(req, res);
 
+    const route = routes.find((route) => {
+        return route.method === method && route.path.test(url);
+    });
 
-  const route = routes.find((route) => {
-    return route.method === method && route.path.test(url)
-  })
+    if (route) {
+        const routeParams = req.url.match(route.path);
 
-  if (route) {
+        const { query, ...params } = routeParams.groups;
 
+        req.params = params;
+        req.query = query ? extractQueryParams(query) : {};
 
-    const routeParams = req.url.match(route.path)
+        return route.handler(req, res);
+    }
 
-    const { query, ...params } = routeParams.groups
+    console.log(route);
 
-    req.params = params
-    req.query = query ? extractQueryParams(query) : {}
-
-    return route.handler(req, res)
-  }
-
-
-  console.log(route)
-
-
-  res.writeHead(404).end("Not found!");
+    res.writeHead(404).end("Not found!");
 });
 
 server.listen(3333);
