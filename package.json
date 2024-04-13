@@ -6,8 +6,12 @@
     "main": "index.js",
     "scripts": {
         "dev": "node --watch ./src/server.js",
-        "test": "node ./src/fundamentals/test.js"
+        "test": "node ./fundamentals/test.js",
+        "csv": "node ./fundamentals/import-csv.js"
     },
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "csv-parse": "^5.5.5"
+    }
 }

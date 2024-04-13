@@ -26,11 +26,18 @@ export const routes = [
         handler: (req, res) => {
             const { title, description } = req.body;
 
+            if (!title || !description) {
+                return res.writeHead(401).end(JSON.stringify({
+                    success: false,
+                    msg: "You need to inform title and description to register!",
+                }))
+            }
+
             const task = {
                 id: randomUUID(),
                 title,
                 description,
-                completed_at: false,
+                completed_at: null,
             };
 
             const data = database.insert("tasks", task);
@@ -60,7 +67,7 @@ export const routes = [
                 return res.writeHead(401).end(
                     JSON.stringify({
                         success: false,
-                        msg: "No body params found!",
+                        msg: "You need to inform at least title or description!",
                     })
                 );
             }
@@ -81,4 +88,5 @@ export const routes = [
             return res.writeHead(204).end();
         },
     },
+
 ];
